@@ -6,9 +6,10 @@ import {
   TextInput,
   ActivityIndicator
 } from 'react-native';
-import { Header } from './components/Header';
+import { StackNavigator } from 'react-navigation';
 import Translation from './components/Translation';
 import { Button } from './components/Button';
+import SavedVocabulary from './components/SavedVocabulary';
 
 class App extends Component {
   constructor() {
@@ -16,6 +17,8 @@ class App extends Component {
     this.state = { searchText: '', loading: false };
     this.onSearch = this.onSearch.bind(this);
     this.renderContent = this.renderContent.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handlePress = this.handlePress.bind(this);
   }
   onSearch() {
     if (this.state.searchText.length > 1) {
@@ -31,6 +34,7 @@ class App extends Component {
           this.setState({
             kanji,
             reading,
+            wordSearched: this.state.searchText,
             searchText: '',
             loading: false
           });
@@ -43,28 +47,74 @@ class App extends Component {
         });
     }
   }
+  async handleSave() {
+    // await AsyncStorage.removeItem('ListStore');
+    try {
+      const value = await AsyncStorage.getItem('ListStore');
+      console.log('first value', value);
+      if (value) {
+        try {
+          const { kanji, reading, wordSearched } = this.state;
+
+          const value = await AsyncStorage.getItem('ListStore');
+          const parsedValue = JSON.parse(value);
+
+          const newItem = { wordSearched, kanji, reading };
+          const list = JSON.stringify([...parsedValue, newItem]);
+
+          await AsyncStorage.setItem('ListStore', list);
+        } catch (error) {
+          alert(error);
+        }
+      } else {
+        try {
+          const { kanji, reading, wordSearched } = this.state;
+          const list = JSON.stringify({ wordSearched, kanji, reading });
+          await AsyncStorage.setItem('ListStore', list);
+          console.log('list', list);
+        } catch (error) {
+          alert(error);
+        }
+      }
+    } catch (error) {
+      alert(error);
+    }
+  }
   renderContent() {
     if (this.state.loading === true) {
       return <ActivityIndicator size="large" color="#f5f5f5" />;
     }
     if (this.state.kanji && this.state.reading) {
       return (
-        <Translation kanji={this.state.kanji} reading={this.state.reading} />
+        <View>
+          <Translation kanji={this.state.kanji} reading={this.state.reading} />
+          <Button onPress={this.handleSave} title="Add" />
+        </View>
       );
     }
+  }
+  handlePress() {
+    AsyncStorage.getItem('ListStore').then(vocabularyList => {
+      this.props.navigation.navigate('SavedVocabulary', { vocabularyList });
+    });
   }
   render() {
     return (
       <View style={styles.appStyle}>
-        <Header title="Shinpuru" />
         <View style={styles.container}>
-          <View style={styles.contentStyle}>{this.renderContent()}</View>
-          <TextInput
-            style={styles.textInputStyle}
-            onChangeText={text => this.setState({ searchText: text })}
-            value={this.state.searchText}
-          />
-          <Button title="Search" onPress={this.onSearch} />
+          <View style={styles.translationContainerStyle}>
+            {this.renderContent()}
+          </View>
+          <View style={styles.searchContainerStyle}>
+            <TextInput
+              style={styles.textInputStyle}
+              onChangeText={text => this.setState({ searchText: text })}
+              value={this.state.searchText}
+              onSubmitEditing={this.onSearch}
+            />
+            <Button title="Search" onPress={this.onSearch} />
+            <Button title="Saved Vocabulary" onPress={this.handlePress} />
+          </View>
         </View>
       </View>
     );
@@ -82,8 +132,11 @@ const styles = StyleSheet.create({
     marginRight: 10,
     flex: 1
   },
-  contentStyle: {
-    height: 130
+  translationContainerStyle: {
+    flex: 1
+  },
+  searchContainerStyle: {
+    flex: 1
   },
   textInputStyle: {
     height: 50,
@@ -95,4 +148,19 @@ const styles = StyleSheet.create({
   }
 });
 
-export default App;
+const RootNavigator = StackNavigator({
+  Home: {
+    screen: App,
+    navigationOptions: {
+      headerTitle: 'Shinpuru'
+    }
+  },
+  SavedVocabulary: {
+    screen: SavedVocabulary,
+    navigationOptions: {
+      headerTitle: 'Saved Vocabulary'
+    }
+  }
+});
+
+export default RootNavigator;
