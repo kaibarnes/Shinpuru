@@ -5,7 +5,8 @@ import {
   AsyncStorage,
   ActivityIndicator,
   Text,
-  FlatList
+  FlatList,
+  Dimensions
 } from 'react-native';
 import { Card } from './Card';
 import { CardSection } from './CardSection';
@@ -30,17 +31,18 @@ class SavedVocabulary extends Component {
         <FlatList
           data={vocabularyList}
           keyExtractor={item => item.reading}
+          numColumns={3}
           renderItem={({ item }) => {
             return (
-              <Card>
-                <CardSection>
-                  <Text>{item.wordSearched}</Text>
+              <Card style={styles.cardStyles}>
+                <CardSection style={styles.englishContainer}>
+                  <Text style={styles.englishStyle}>{item.wordSearched}</Text>
                 </CardSection>
-                <CardSection>
-                  <Text>{item.kanji}</Text>
+                <CardSection style={styles.japaneseContainer}>
+                  <Text style={styles.japaneseStyle}>{item.kanji}</Text>
                 </CardSection>
-                <CardSection>
-                  <Text>{item.reading}</Text>
+                <CardSection style={styles.japaneseContainer}>
+                  <Text style={styles.japaneseStyle}>{item.reading}</Text>
                 </CardSection>
               </Card>
             );
@@ -55,10 +57,30 @@ class SavedVocabulary extends Component {
   }
 }
 
+const deviceWidth = Dimensions.get('window').width;
+const cardMargin = deviceWidth / 80;
+const cardWidth = (deviceWidth - cardMargin * 6) / 3;
+
 const styles = StyleSheet.create({
   appStyle: {
     backgroundColor: '#334d5c',
     flex: 1
+  },
+  cardStyles: {
+    width: cardWidth,
+    marginHorizontal: cardMargin
+  },
+  englishContainer: {
+    justifyContent: 'center'
+  },
+  englishStyle: {
+    fontSize: 18
+  },
+  japaneseContainer: {
+    justifyContent: 'center'
+  },
+  japaneseStyle: {
+    fontSize: 15
   }
 });
 
