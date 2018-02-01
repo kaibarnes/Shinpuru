@@ -19,10 +19,11 @@ class SavedVocabulary extends Component {
     this.renderVocabulary = this.renderVocabulary.bind(this);
   }
   componentDidMount() {
-    const { vocabularyList } = this.props.navigation.state.params;
-    if (vocabularyList !== this.state.vocabularyList) {
-      this.setState({ vocabularyList: JSON.parse(vocabularyList) });
-    }
+    AsyncStorage.getItem('ListStore').then(vocabularyList => {
+      if (vocabularyList !== this.state.vocabularyList) {
+        this.setState({ vocabularyList: JSON.parse(vocabularyList) });
+      }
+    });
   }
   renderVocabulary() {
     if (this.state.vocabularyList) {
