@@ -4,11 +4,12 @@ import {
   StyleSheet,
   View,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
+  Text,
+  Button
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Translation from './components/Translation';
-import { Button } from './components/Button';
 import SavedVocabulary from './components/SavedVocabulary';
 
 class App extends Component {
@@ -18,8 +19,18 @@ class App extends Component {
     this.onSearch = this.onSearch.bind(this);
     this.renderContent = this.renderContent.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.handlePress = this.handlePress.bind(this);
   }
+  static navigationOptions = ({ navigation }) => ({
+    title: 'My Profile!',
+    headerRight: (
+      <Button
+        title="Favorites"
+        onPress={() => {
+          navigation.navigate('SavedVocabulary');
+        }}
+      />
+    )
+  });
   onSearch() {
     if (this.state.searchText.length > 1) {
       this.setState({ loading: true });
@@ -71,7 +82,6 @@ class App extends Component {
           const { kanji, reading, wordSearched } = this.state;
           const list = JSON.stringify({ wordSearched, kanji, reading });
           await AsyncStorage.setItem('ListStore', list);
-          console.log('list', list);
         } catch (error) {
           alert(error);
         }
@@ -84,7 +94,7 @@ class App extends Component {
     if (this.state.loading === true) {
       return <ActivityIndicator size="large" color="#f5f5f5" />;
     }
-    if (this.state.kanji && this.state.reading) {
+    if (this.state.kanji || this.state.reading) {
       return (
         <View>
           <Translation kanji={this.state.kanji} reading={this.state.reading} />
@@ -92,11 +102,6 @@ class App extends Component {
         </View>
       );
     }
-  }
-  handlePress() {
-    AsyncStorage.getItem('ListStore').then(vocabularyList => {
-      this.props.navigation.navigate('SavedVocabulary', { vocabularyList });
-    });
   }
   render() {
     return (
@@ -113,7 +118,6 @@ class App extends Component {
               onSubmitEditing={this.onSearch}
             />
             <Button title="Search" onPress={this.onSearch} />
-            <Button title="Saved Vocabulary" onPress={this.handlePress} />
           </View>
         </View>
       </View>
@@ -131,6 +135,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     flex: 1
+  },
+  startingTextStyle: {
+    fontSize: 20,
+    marginHorizontal: 30,
+    marginTop: 30,
+    color: 'lightgray'
   },
   translationContainerStyle: {
     flex: 1
@@ -150,10 +160,7 @@ const styles = StyleSheet.create({
 
 const RootNavigator = StackNavigator({
   Home: {
-    screen: App,
-    navigationOptions: {
-      headerTitle: 'Shinpuru'
-    }
+    screen: App
   },
   SavedVocabulary: {
     screen: SavedVocabulary,
