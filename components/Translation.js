@@ -6,8 +6,8 @@ const Translation = props => {
   const { container, kanjiStyle, readingStyle } = styles;
   return (
     <View style={container}>
-      <Text style={kanjiStyle}>{kanji}</Text>
       <Text style={readingStyle}>{reading}</Text>
+      <Text style={kanjiStyle}>{kanji}</Text>
     </View>
   );
 };
@@ -17,12 +17,10 @@ const styles = {
     alignItems: 'center'
   },
   kanjiStyle: {
-    color: '#f5f5f5',
-    fontSize: 50
+    fontSize: 100
   },
   readingStyle: {
-    color: '#f5f5f5',
-    fontSize: 20
+    fontSize: 30
   }
 };
 

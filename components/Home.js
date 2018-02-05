@@ -6,11 +6,14 @@ import {
   TextInput,
   ActivityIndicator,
   Text,
-  Button
+  Button,
+  TouchableOpacity,
+  Image
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import Translation from './Translation';
 import SavedVocabulary from './SavedVocabulary';
+import CustomButton from './Button';
 
 export default class Home extends Component {
   constructor() {
@@ -22,9 +25,12 @@ export default class Home extends Component {
   }
   static navigationOptions = ({ navigation }) => ({
     title: 'Shinpuru',
+    headerTitleStyle: styles.headerTitleStyle,
+    headerStyle: styles.headerStyle,
     headerRight: (
       <Button
         title="Favorites"
+        color="white"
         onPress={() => {
           navigation.navigate('SavedVocabulary');
         }}
@@ -98,28 +104,38 @@ export default class Home extends Component {
       return (
         <View>
           <Translation kanji={this.state.kanji} reading={this.state.reading} />
-          <Button onPress={this.handleSave} title="Add" />
+          <CustomButton
+            onPress={this.handleSave}
+            title="Favorite"
+            style={styles.FavoriteButton}
+          />
         </View>
       );
     }
+    return (
+      <View style={styles.defaultTextContainer}>
+        <Text style={styles.defaultText}>
+          Enter an English word above to get a Japanese translation
+        </Text>
+        <Text style={styles.defaultText}>
+          Shinpuru isn't very smart, so keep it シンプル
+        </Text>
+      </View>
+    );
   }
   render() {
     return (
       <View style={styles.appStyle}>
-        <View style={styles.container}>
-          <View style={styles.translationContainerStyle}>
-            {this.renderContent()}
-          </View>
-          <View style={styles.searchContainerStyle}>
-            <TextInput
-              style={styles.textInputStyle}
-              onChangeText={text => this.setState({ searchText: text })}
-              value={this.state.searchText}
-              onSubmitEditing={this.onSearch}
-            />
-            <Button title="Search" onPress={this.onSearch} />
-          </View>
+        <View style={styles.searchContainerStyle}>
+          <TextInput
+            style={styles.textInputStyle}
+            onChangeText={text => this.setState({ searchText: text })}
+            value={this.state.searchText}
+            onSubmitEditing={this.onSearch}
+            placeholder="Search"
+          />
         </View>
+        <View style={styles.container}>{this.renderContent()}</View>
       </View>
     );
   }
@@ -127,33 +143,53 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   appStyle: {
-    backgroundColor: '#334d5c',
     flex: 1
+  },
+  headerStyle: {
+    backgroundColor: '#ce1a1a',
+    borderBottomWidth: 0
+  },
+  headerTitleStyle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'white',
+    fontFamily: 'American Typewriter'
+  },
+  searchContainerStyle: {
+    backgroundColor: '#ce1a1a',
+    alignItems: 'center',
+    paddingBottom: 10,
+    paddingTop: 0
+  },
+  textInputStyle: {
+    width: 220,
+    height: 40,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 20,
+    fontSize: 18,
+    paddingHorizontal: 10,
+    paddingVertical: 2
   },
   container: {
-    marginTop: 100,
-    marginLeft: 10,
-    marginRight: 10,
+    marginVertical: 100,
+    marginHorizontal: 20,
     flex: 1
   },
-  startingTextStyle: {
-    fontSize: 20,
+  defaultTextContainer: {
+    justifyContent: 'center',
     marginHorizontal: 30,
-    marginTop: 30,
-    color: 'lightgray'
+    flex: 1
+  },
+  defaultText: {
+    marginBottom: 10,
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'gray'
   },
   translationContainerStyle: {
     flex: 1
   },
-  searchContainerStyle: {
-    flex: 1
-  },
-  textInputStyle: {
-    height: 50,
-    backgroundColor: '#f5f5f5',
-    borderColor: 'gray',
-    borderWidth: 1,
-    fontSize: 20,
-    paddingHorizontal: 5
+  FavoriteButton: {
+    backgroundColor: '#ce1a1a'
   }
 });

@@ -8,10 +8,7 @@ const RootNavigator = StackNavigator({
     screen: Home
   },
   SavedVocabulary: {
-    screen: SavedVocabulary,
-    navigationOptions: {
-      headerTitle: 'Saved Vocabulary'
-    }
+    screen: SavedVocabulary
   }
 });
 

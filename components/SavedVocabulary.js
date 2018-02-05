@@ -18,6 +18,12 @@ class SavedVocabulary extends Component {
 
     this.renderVocabulary = this.renderVocabulary.bind(this);
   }
+  static navigationOptions = ({ navigation }) => ({
+    title: 'Favorites',
+    headerTitleStyle: styles.headerTitleStyle,
+    headerStyle: styles.headerStyle,
+    headerTintColor: 'white'
+  });
   componentDidMount() {
     AsyncStorage.getItem('ListStore').then(vocabularyList => {
       if (vocabularyList !== this.state.vocabularyList) {
@@ -64,8 +70,17 @@ const cardWidth = (deviceWidth - cardMargin * 6) / 3;
 
 const styles = StyleSheet.create({
   appStyle: {
-    backgroundColor: '#334d5c',
     flex: 1
+  },
+  headerStyle: {
+    backgroundColor: '#ce1a1a',
+    borderBottomWidth: 0
+  },
+  headerTitleStyle: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: 'white',
+    fontFamily: 'American Typewriter'
   },
   cardStyles: {
     width: cardWidth,
