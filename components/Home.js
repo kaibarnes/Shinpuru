@@ -6,13 +6,9 @@ import {
   TextInput,
   ActivityIndicator,
   Text,
-  Button,
-  TouchableOpacity,
-  Image
+  Button
 } from 'react-native';
-import { StackNavigator } from 'react-navigation';
 import Translation from './Translation';
-import SavedVocabulary from './SavedVocabulary';
 import CustomButton from './Button';
 
 export default class Home extends Component {
@@ -38,6 +34,7 @@ export default class Home extends Component {
     )
   });
   onSearch() {
+    // checks that the input isn't empty
     if (this.state.searchText.length > 1) {
       this.setState({ loading: true });
       const searchQuery =
@@ -65,28 +62,28 @@ export default class Home extends Component {
     }
   }
   async handleSave() {
+    // Delete the storage
     // await AsyncStorage.removeItem('ListStore');
     try {
       const value = await AsyncStorage.getItem('ListStore');
-      console.log('first value', value);
+      // checks if there is already a store in AsyncStorage
       if (value) {
         try {
           const { kanji, reading, wordSearched } = this.state;
-
           const value = await AsyncStorage.getItem('ListStore');
           const parsedValue = JSON.parse(value);
-
           const newItem = { wordSearched, kanji, reading };
           const list = JSON.stringify([...parsedValue, newItem]);
-
           await AsyncStorage.setItem('ListStore', list);
         } catch (error) {
           alert(error);
         }
       } else {
+        // creates a new store if one doesn't exist in AsyncStorage
         try {
           const { kanji, reading, wordSearched } = this.state;
           const list = JSON.stringify({ wordSearched, kanji, reading });
+          // creates a store with the searched for translation
           await AsyncStorage.setItem('ListStore', list);
         } catch (error) {
           alert(error);
@@ -97,9 +94,11 @@ export default class Home extends Component {
     }
   }
   renderContent() {
+    // renders a spinner if waiting for the translation
     if (this.state.loading === true) {
       return <ActivityIndicator size="large" color="#f5f5f5" />;
     }
+    // renders the translation if one is received
     if (this.state.kanji || this.state.reading) {
       return (
         <View>
@@ -140,7 +139,6 @@ export default class Home extends Component {
     );
   }
 }
-
 const styles = StyleSheet.create({
   appStyle: {
     flex: 1
@@ -185,9 +183,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     color: 'gray'
-  },
-  translationContainerStyle: {
-    flex: 1
   },
   FavoriteButton: {
     backgroundColor: '#ce1a1a'

@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import React from 'react';
+import { Text, View } from 'react-native';
 
 const Translation = props => {
   const { kanji, reading } = props;

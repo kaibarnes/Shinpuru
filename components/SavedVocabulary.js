@@ -3,7 +3,6 @@ import {
   StyleSheet,
   View,
   AsyncStorage,
-  ActivityIndicator,
   Text,
   FlatList,
   Dimensions
@@ -18,7 +17,7 @@ class SavedVocabulary extends Component {
 
     this.renderVocabulary = this.renderVocabulary.bind(this);
   }
-  static navigationOptions = ({ navigation }) => ({
+  static navigationOptions = () => ({
     title: 'Favorites',
     headerTitleStyle: styles.headerTitleStyle,
     headerStyle: styles.headerStyle,
