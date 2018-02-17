@@ -56,6 +56,16 @@ class SavedVocabulary extends Component {
         />
       );
     }
+    return (
+      <View style={styles.defaultTextContainer}>
+        <Text style={styles.defaultText}>
+          It looks like you don't have any favorites yet
+        </Text>
+        <Text style={styles.defaultText}>
+          Find something you like on the main screen and check back here
+        </Text>
+      </View>
+    );
   }
 
   render() {
@@ -80,6 +90,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontFamily: 'American Typewriter'
+  },
+  defaultTextContainer: {
+    justifyContent: 'center',
+    marginHorizontal: 30,
+    flex: 1
+  },
+  defaultText: {
+    marginBottom: 10,
+    fontSize: 20,
+    textAlign: 'center',
+    color: 'gray'
   },
   cardStyles: {
     width: cardWidth,
